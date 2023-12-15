@@ -3,9 +3,9 @@ package com.example.qrdolgozat;
 public class Person {
     private int id;
     private String name;
-    private int grade;
+    private String grade;
 
-    public Person(int id, String name, int grade) {
+    public Person(int id, String name, String grade) {
         this.id = id;
         this.name = name;
         this.grade = grade;
@@ -19,7 +19,7 @@ public class Person {
 
     public void setName(String name) { this.name = name; }
 
-    public int getGrade() { return grade; }
+    public String getGrade() { return grade; }
 
-    public void setGrade(int grade) { this.grade = grade; }
+    public void setGrade(String grade) { this.grade = grade; }
 }

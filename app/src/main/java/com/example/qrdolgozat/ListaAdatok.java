@@ -142,13 +142,13 @@ public class ListaAdatok extends AppCompatActivity {
     private void personUpdate() {
         String id = editTextId.getText().toString();
         String name = editTextName.getText().toString();
-        String gradeText = editTextGrade.getText().toString();
+        String grade = editTextGrade.getText().toString();
 
-        if(name.trim().isEmpty() || gradeText.trim().isEmpty()){
+        if(name.trim().isEmpty() || grade.trim().isEmpty()){
             Toast.makeText(this, "Töltse ki az összes mezőt", Toast.LENGTH_SHORT).show();
-            return;
+        } else if (Integer.parseInt(grade) < 1 || Integer.parseInt(grade) > 5) {
+            Toast.makeText(this, "A jegy 1 és 5 között legyen", Toast.LENGTH_SHORT).show();
         } else {
-            int grade = Integer.parseInt(gradeText);
             Person person = new Person(Integer.parseInt(id), name, grade);
             Gson converter = new Gson();
             RequestTask task = new RequestTask(helper + "/" + id, "PUT",
@@ -172,7 +172,7 @@ public class ListaAdatok extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("Data",
                 Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        helper = sharedPreferences.getString("adat", "Üres");
+        helper = sharedPreferences.getString("adat", "");
     }
 
     @Override
@@ -180,5 +180,8 @@ public class ListaAdatok extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_adatok);
         init();
+
+        RequestTask task = new RequestTask(helper, "GET");
+        task.execute();
     }
 }
