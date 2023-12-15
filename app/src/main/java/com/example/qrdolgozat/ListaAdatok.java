@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListaAdatok extends AppCompatActivity {
@@ -62,6 +69,73 @@ public class ListaAdatok extends AppCompatActivity {
             });
 
             return view;
+        }
+    }
+
+    private class RequestTask extends AsyncTask<Void, Void, Response> {
+        String requestUrl;
+        String requestType;
+        String requestParams;
+
+        public RequestTask(String requestUrl, String requestType, String requestParams) {
+            this.requestUrl = requestUrl;
+            this.requestType = requestType;
+            this.requestParams = requestParams;
+        }
+
+        public RequestTask(String requestUrl, String requestType) {
+            this.requestUrl = requestUrl;
+            this.requestType = requestType;
+        }
+
+        @Override
+        protected Response doInBackground(Void... voids) {
+            Response response = null;
+            try {
+                switch (requestType) {
+                    case "GET":
+                        response = RequestHandler.get(requestUrl);
+                        break;
+                    case "PUT":
+                        response = RequestHandler.put(requestUrl, requestParams);
+                        break;
+                }
+            } catch (IOException e) {
+                Toast.makeText(ListaAdatok.this, e.toString(), Toast.LENGTH_SHORT).show();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Response response) {
+            super.onPostExecute(response);
+            progressBar.setVisibility(View.GONE);
+            Gson converter = new Gson();
+            if (response.getResponseCode() >= 400) {
+                Toast.makeText(ListaAdatok.this, "Hiba történt a kérés feldolgozása során",
+                        Toast.LENGTH_SHORT).show();
+                Log.d("onPostExecute", response.getResponseMessage());
+            }
+
+            switch (requestType) {
+                case "GET":
+                    Person[] peopleArray = converter.fromJson(response.getResponseMessage(), Person[].class);
+                    people.clear();
+                    people.addAll(Arrays.asList(peopleArray));
+                    break;
+                case "PUT":
+                    Person updatePerson = converter.fromJson(response.getResponseMessage(), Person.class);
+                    people.replaceAll(updatedPerson -> updatedPerson.getId() == updatePerson
+                            .getId() ? updatePerson : updatedPerson);
+                    linearLayoutForm.setVisibility(View.GONE);
+                    break;
+            }
         }
     }
 
