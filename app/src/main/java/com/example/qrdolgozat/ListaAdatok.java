@@ -139,6 +139,24 @@ public class ListaAdatok extends AppCompatActivity {
         }
     }
 
+    private void personUpdate() {
+        String id = editTextId.getText().toString();
+        String name = editTextName.getText().toString();
+        String gradeText = editTextGrade.getText().toString();
+
+        if(name.trim().isEmpty() || gradeText.trim().isEmpty()){
+            Toast.makeText(this, "Töltse ki az összes mezőt", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            int grade = Integer.parseInt(gradeText);
+            Person person = new Person(Integer.parseInt(id), name, grade);
+            Gson converter = new Gson();
+            RequestTask task = new RequestTask(helper + "/" + id, "PUT",
+                    converter.toJson(person));
+            task.execute();
+        }
+    }
+
     public void init() {
         progressBar = findViewById(R.id.progressBar);
         linearLayoutForm = findViewById(R.id.linearLayoutForm);
