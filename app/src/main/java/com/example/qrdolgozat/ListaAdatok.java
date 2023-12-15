@@ -183,5 +183,19 @@ public class ListaAdatok extends AppCompatActivity {
 
         RequestTask task = new RequestTask(helper, "GET");
         task.execute();
+
+        buttonModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                personUpdate();
+            }
+        });
+
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayoutForm.setVisibility(View.GONE);
+            }
+        });
     }
 }
