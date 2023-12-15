@@ -1,17 +1,17 @@
 package com.example.qrdolgozat;
 
 public class Response {
-    private String responseCode;
+    private int responseCode;
     private String responseMessage;
 
-    public Response(String responseCode, String responseMessage) {
+    public Response(int responseCode, String responseMessage) {
         this.responseCode = responseCode;
         this.responseMessage = responseMessage;
     }
 
-    public String getResponseCode() { return responseCode; }
+    public int getResponseCode() { return responseCode; }
 
-    public void setResponseCode(String responseCode) { this.responseCode = responseCode; }
+    public void setResponseCode(int responseCode) { this.responseCode = responseCode; }
 
     public String getResponseMessage() { return responseMessage; }
 
